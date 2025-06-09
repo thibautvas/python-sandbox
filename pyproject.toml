@@ -1,0 +1,19 @@
+[project]
+name = "tax-material"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ipykernel>=6.29.5",
+    "jupytext>=1.17.2",
+    "pandas>=2.3.0",
+    "plotly>=6.1.2",
+]
+
+[project.scripts]
+share = "tm.share:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
