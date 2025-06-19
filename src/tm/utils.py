@@ -1,19 +1,25 @@
-from typing import List, Optional, Union
+import re
+from typing import Dict, List, Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
 
-pd.options.display.notebook_repr_html = False  # preserve monospaced font
 
-
-def format_args(args: dict, inplace: bool = True) -> Optional[dict]:
+def format_args(
+    args: Dict[str, Union[int, str, List[int], List[str]]],
+) -> Dict[str, Union[int, str]]:
     """
-    format args to pass to an sql query
+    format args to pass to sql queries
+    convert list values to comma-separated strings
+    convert string values to quoted strings
     """
-    target = args if inplace else args.copy()
-    for k, v in target.items():
-        target[k] = str(v).replace("[", "").replace("]", "")
-    return target if not inplace else None
+    args_out = args.copy()
+    for k, v in args.items():
+        if isinstance(v, list):
+            args_out[k] = re.sub(r"[\[\]]", "", str(v))
+        elif isinstance(v, str):
+            args_out[k] = f"'{v}'"
+    return args_out
 
 
 def ts_plot(
