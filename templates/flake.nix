@@ -109,10 +109,5 @@
       packages = forAllSystems (system: {
         default = pythonSets.${system}.mkVirtualEnv "python-sandbox-env" workspace.deps.all;
       });
-
-      templates.default = {
-        description = "template for other python projects";
-        path = ./templates;
-      };
     };
 }
