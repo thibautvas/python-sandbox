@@ -35,8 +35,6 @@
       inherit (nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
 
-      pythonPkg = "python311";
-
       workspace = uv2nix.lib.workspace.loadWorkspace {
         workspaceRoot = ./.;
       };
@@ -53,7 +51,10 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          python = pkgs.${pythonPkg};
+          python = lib.head (pyproject-nix.lib.util.filterPythonInterpreters {
+            inherit (workspace) requires-python;
+            inherit (pkgs) pythonInterpreters;
+          });
         in
         (pkgs.callPackage pyproject-nix.build.packages {
           inherit python;
@@ -77,6 +78,7 @@
           env = {
             UV_NO_SYNC = "1";
             UV_PYTHON_DOWNLOADS = "never";
+            UV_PYTHON = pythonSet.python.interpreter;
           };
         in
         {
@@ -86,22 +88,11 @@
               virtualenv
               pkgs.uv
             ];
-            env = env // {
-              UV_PYTHON = pythonSet.python.interpreter;
-            };
+            inherit env;
             shellHook = ''
               unset PYTHONPATH
               export REPO_ROOT=$(git rev-parse --show-toplevel)
             '';
-          };
-
-          bare = pkgs.mkShell {
-            name = "uv2nix-bare";
-            packages = [
-              pkgs.${pythonPkg}
-              pkgs.uv
-            ];
-            inherit env;
           };
         }
       );
