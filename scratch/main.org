@@ -1,0 +1,49 @@
+#+title: Python sandbox
+#+property: header-args:python :python (expand-file-name ".venv/bin/python" (project-root (project-current))) :session :tangle main.py
+
+#+begin_src python
+import pandas as pd
+import matplotlib.pyplot as plt
+#+end_src
+
+#+RESULTS:
+: None
+
+#+begin_src python
+df = pd.DataFrame(
+    {
+        "day": pd.date_range("2026-01-01", "2026-01-10"),
+        "clicks": [105, 98, 101, 95, 88, 70, 102, 115, 115, 100],
+        "sales": [20, 9, 11, 15, 18, 17, 22, 25, 35, 23],
+    }
+)
+#+end_src
+
+#+RESULTS:
+: None
+
+#+begin_src python :results output
+print(df.head())
+#+end_src
+
+#+RESULTS:
+:          day  clicks  sales
+: 0 2026-01-01     105     20
+: 1 2026-01-02      98      9
+: 2 2026-01-03     101     11
+: 3 2026-01-04      95     15
+: 4 2026-01-05      88     18
+
+#+begin_src python :results graphics file output :file output/lineplot.png
+plt.plot(df["day"], df["clicks"], marker="o", label="clicks")
+plt.plot(df["day"], df["sales"], marker="o", label="sales")
+plt.title("Clicks and sales over time")
+plt.xlabel("day")
+plt.ylabel("kpi")
+plt.gcf().autofmt_xdate()
+plt.legend()
+#+end_src
+
+#+RESULTS:
+[[file:output/lineplot.png]]
+
